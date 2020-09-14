@@ -14,12 +14,20 @@ function ActionRowBack({renderLeftHiddenItem, renderRightHiddenItem, opacityAnim
   });
   return (
     <Animated.View style={{flex: 1}}>
-      <Animated.View style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, opacity: leftOpacity}}>
-        {renderLeftHiddenItem()}
-      </Animated.View>
-      <Animated.View style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, opacity: rightOpacity}}>
-        {renderRightHiddenItem()}
-      </Animated.View>
+    {
+      renderLeftHiddenItem && (
+        <Animated.View style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, opacity: leftOpacity}}>
+          {renderLeftHiddenItem()}
+        </Animated.View>
+      )
+    }
+    {
+      renderRightHiddenItem && (
+        <Animated.View style={{position: 'absolute', top: 0, right: 0, left: 0, bottom: 0, opacity: rightOpacity}}>
+          {renderRightHiddenItem()}
+        </Animated.View>
+      )
+    }
     </Animated.View>
   );
 }
@@ -102,43 +110,13 @@ export default class SwipeActionList extends React.Component {
     );
   }
 
-  onSwipeValueChange = (swipeData) => {
-    const { key, value } = swipeData;
-    this.state.opacityAnims[key].setValue(value < 0 ? -1 : 1);
-  }
-
-  onRowOpen = (key, rowMap, toValue) => {
-    if (toValue < 0) {
-      Animated.sequence([
-        Animated.timing(this.state.hookAnims[key], {toValue: -1, duration: SwipeActionList.Defaults.ANIM_HOOK_DURATION}),
-        Animated.timing(this.state.itemHeightAnims[key], {toValue: 0, duration: SwipeActionList.Defaults.ANIM_HEIGHT_DURATION})
-      ]).start(() => {
-        if (this.props.onSwipeLeft) {
-          this.props.onSwipeLeft(key);
-        }
-      });
-    } else {
-      Animated.sequence([
-        Animated.timing(this.state.hookAnims[key], {toValue: 1, duration: SwipeActionList.Defaults.ANIM_HOOK_DURATION}),
-        Animated.timing(this.state.itemHeightAnims[key], {toValue: 0, duration: SwipeActionList.Defaults.ANIM_HEIGHT_DURATION})
-      ]).start(() => {
-        if (this.props.onSwipeRight) {
-          this.props.onSwipeRight(key);
-        }
-      });
-    }
-  }
-
   render() {
     const screenWidth = Dimensions.get('window').width;
     return (
       <SwipeListView
-        {...this.props}
         renderHiddenItem={this.renderHiddenItem}
         rightOpenValue={-screenWidth}
         leftOpenValue={screenWidth}
-        onRowOpen={this.onRowOpen}
-        onSwipeValueChange={this.onSwipeValueChange}
         renderItem={this.renderItem}
         // Make sure to not trigger a row close on scroll since it has racing
         // issues with onSwipe(Left|Right).
@@ -147,6 +125,7 @@ export default class SwipeActionList extends React.Component {
         // https://github.com/jemise111/react-native-swipe-list-view/issues/312
         // useNativeDriver causes a bug on Android when releasing a row swipe
         useNativeDriver={false}
+        {...this.props}
         // -- /WORKAROUND -----------------------------------------------------
       />
     );
