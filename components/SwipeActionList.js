@@ -8,7 +8,7 @@ import { Dimensions, TouchableWithoutFeedback } from 'react-native';
 export default class SwipeActionList extends React.Component {
     render() {
         const screenWidth = Dimensions.get('window').width;
-        
+
         return (
             <SwipeListView
                 closeOnScroll={false}
@@ -17,8 +17,7 @@ export default class SwipeActionList extends React.Component {
                 rightOpenValue={-screenWidth}
                 {...this.props}
                 renderItem={ (data) => (
-                    <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: 'transparent', zIndex: 9900, height: 160, width: screenWidth }}
-                                        onPress={ () => this.props.onPress(data) }
+                    <TouchableWithoutFeedback onPress={ () => this.props.onPress(data) }
                     >
                         { this.props.renderItem(data) }
                     </TouchableWithoutFeedback>
