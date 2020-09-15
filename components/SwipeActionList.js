@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Dimensions, Animated } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Animated, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -78,9 +78,11 @@ export default class SwipeActionList extends React.Component {
       }
 
       return (
-        <Animated.View onLayout={onLayout}>
-          {this.props.renderItem(data, rowMap)}
-        </Animated.View>
+        <TouchableHighlight onPress={ this.props.onPress }>
+          <Animated.View onLayout={onLayout}>
+            {this.props.renderItem(data, rowMap)}
+          </Animated.View>
+        </TouchableHighlight>
       );
     } else {
       const height = this.state.itemHeightAnims[key].interpolate({
@@ -92,9 +94,11 @@ export default class SwipeActionList extends React.Component {
       });
 
       return (
-        <Animated.View style={{height}}>
-          {this.props.renderItem(data, rowMap)}
-        </Animated.View>
+        <TouchableHighlight onPress={ this.props.onPress }>
+          <Animated.View style={{height}}>
+            {this.props.renderItem(data, rowMap)}
+          </Animated.View>
+        </TouchableHighlight>
       );
     }
   }
@@ -136,8 +140,8 @@ SwipeActionList.propTypes = {
   data: PropTypes.array.isRequired,
   renderItem: PropTypes.func.isRequired,
   keyExtractor: PropTypes.func.isRequired,
-  renderLeftHiddenItem: PropTypes.func.isRequired,
-  renderRightHiddenItem: PropTypes.func.isRequired,
+  renderLeftHiddenItem: PropTypes.func,
+  renderRightHiddenItem: PropTypes.func,
   onSwipeLeft: PropTypes.func,
   onSwipeRight: PropTypes.func
 };
